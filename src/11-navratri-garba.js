@@ -89,25 +89,83 @@
  *   // => deep clone of stage with id "stage-clone"
  */
 export function insertDancer(stage, newDancer, referenceDancer) {
-  // Your code here
+  if (!stage || !newDancer) return false;
+
+  try {
+    if (referenceDancer) {
+      stage.insertBefore(newDancer, referenceDancer);
+    } else {
+      stage.appendChild(newDancer);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
 export function cloneDancer(dancer, deep) {
-  // Your code here
+  if (!dancer) return null;
+
+  const clone = dancer.cloneNode(!!deep);
+
+  if (clone.id) {
+    clone.id = `${clone.id}-copy`;
+  }
+
+  return clone;
 }
 
 export function replaceDancer(stage, oldDancer, newDancer) {
-  // Your code here
+  if (!stage || !oldDancer || !newDancer) return null;
+
+  try {
+    const replaced = stage.replaceChild(newDancer, oldDancer);
+    return replaced;
+  } catch (e) {
+    return null;
+  }
 }
 
 export function removeDancer(stage, dancer) {
-  // Your code here
+  if (!stage || !dancer) return null;
+
+  try {
+    const removed = stage.removeChild(dancer);
+    return removed;
+  } catch (e) {
+    return null; 
+  }
 }
 
 export function rearrangeStage(stage, order) {
-  // Your code here
+  if (!stage || !Array.isArray(order)) return false;
+
+  const children = Array.from(stage.children);
+
+  if (order.length !== children.length) return false;
+
+  const isValid = order.every(
+    (i) => Number.isInteger(i) && i >= 0 && i < children.length
+  );
+  if (!isValid) return false;
+
+  const newOrder = order.map((i) => children[i]);
+
+  stage.innerHTML = "";
+
+  newOrder.forEach((el) => stage.appendChild(el));
+
+  return true;
 }
 
 export function duplicateFormation(stage) {
-  // Your code here
+  if (!stage) return null;
+
+  const clone = stage.cloneNode(true);
+
+  if (clone.id) {
+    clone.id = `${clone.id}-clone`;
+  }
+
+  return clone;
 }

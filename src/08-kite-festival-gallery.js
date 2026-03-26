@@ -79,21 +79,126 @@
  *   // => 1 (only red kites shown)
  */
 export function renderKiteCard(kite) {
-  // Your code here
+  if (
+    !kite ||
+    !kite.name ||
+    !kite.color ||
+    !kite.size ||
+    !kite.maker ||
+    !kite.image
+  ) {
+    return null;
+  }
+
+  const card = document.createElement("div");
+  card.classList.add("kite-card");
+
+  const img = document.createElement("img");
+  img.src = kite.image;
+  img.alt = kite.name;
+
+  const name = document.createElement("h3");
+  name.classList.add("kite-name");
+  name.textContent = kite.name;
+
+  const maker = document.createElement("p");
+  maker.classList.add("kite-maker");
+  maker.textContent = `by ${kite.maker}`;
+
+  const info = document.createElement("p");
+  info.classList.add("kite-info");
+  info.textContent = `${kite.size} - ${kite.color}`;
+
+  card.appendChild(img);
+  card.appendChild(name);
+  card.appendChild(maker);
+  card.appendChild(info);
+
+  return card;
 }
 
 export function renderGallery(container, kites) {
-  // Your code here
+   if (!container || !Array.isArray(kites)) {
+    return -1;
+  }
+
+  container.innerHTML = "";
+
+  let count = 0;
+
+  kites.forEach((kite) => {
+    const card = renderKiteCard(kite);
+    if (card) {
+      container.appendChild(card);
+      count++;
+    }
+  });
+
+  return count;
 }
 
 export function filterKites(container, kites, filterFn) {
-  // Your code here
+  if (!container || !Array.isArray(kites) || typeof filterFn !== "function") {
+    return -1;
+  }
+
+  container.innerHTML = "";
+
+  const filtered = kites.filter(filterFn);
+
+  let count = 0;
+
+  filtered.forEach((kite) => {
+    const card = renderKiteCard(kite);
+    if (card) {
+      container.appendChild(card);
+      count++;
+    }
+  });
+
+  return count;
 }
 
 export function sortAndRender(container, kites, sortField, order) {
-  // Your code here
+  if (!container || !Array.isArray(kites)) {
+    return [];
+  }
+
+  const sortedKites = [...kites];
+
+  sortedKites.sort((a, b) => {
+    if (!a[sortField] || !b[sortField]) return 0;
+
+    let valA = a[sortField];
+    let valB = b[sortField];
+
+    if (typeof valA === "string" && typeof valB === "string") {
+      return order === "desc"
+        ? valB.localeCompare(valA)
+        : valA.localeCompare(valB);
+    }
+
+    return order === "desc" ? valB - valA : valA - valB;
+  });
+
+  renderGallery(container, sortedKites);
+
+  return sortedKites;
 }
 
 export function renderEmptyState(container, message) {
-  // Your code here
+   if (!container) {
+    return false;
+  }
+
+  if (container.children.length === 0) {
+    const p = document.createElement("p");
+    p.classList.add("empty-state");
+    p.textContent = message;
+
+    container.appendChild(p);
+    return true;
+  }
+
+  return false;
 }
